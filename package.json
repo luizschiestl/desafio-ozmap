@@ -5,7 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "dev": "NODE_ENV=dev tsx watch src/index.ts",
-    "test": "mocha -r ts-node/register test/*.ts"
+    "test": "mocha -r ts-node/register test/*.ts",
+    "db-init": "prisma db push"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/developmentOneZero/fileteste#readme",
   "dependencies": {
+    "@prisma/client": "^4.10.1",
     "koa": "^2.13.0",
     "koa-router": "^9.4.0"
   },
@@ -34,6 +36,7 @@
     "chai-http": "^4.3.0",
     "chai-json-schema": "^1.5.1",
     "mocha": "^8.1.3",
+    "prisma": "^4.10.1",
     "ts-node": "^10.9.1",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
