@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 3000;
 
 const koa = new Koa();
 
-koa.use(koaBody()).use(router.routes()).use(router.allowedMethods());
+koa
+  .use(koaBody())
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 export default koa.listen(PORT);

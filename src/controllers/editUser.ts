@@ -1,10 +1,13 @@
 import { Context } from "koa";
 import { prisma } from "../lib/prisma";
 
-export const createUser = async (ctx: Context) => {
+export const editUser = async (ctx: Context) => {
   try {
-    const user = await prisma.user.create({ data: ctx.request.body });
-    ctx.status = 201;
+    const user = await prisma.user.update({
+      where: { nome: ctx.params.nome },
+      data: ctx.request.body,
+    });
+    ctx.status = 200;
     ctx.body = user;
   } catch (error) {
     console.error(error);

@@ -1,7 +1,7 @@
 import { Context } from "koa";
 import { prisma } from "../lib/prisma";
 
-export const getAllUsersController = async (ctx: Context) => {
+export const getAllUsers = async (ctx: Context) => {
   const allUsers = await prisma.user.findMany();
 
   ctx.status = 200;

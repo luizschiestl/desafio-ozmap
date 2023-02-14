@@ -63,13 +63,27 @@ describe("Testes da aplicaçao", () => {
         done();
       });
   });
+
+  it("deveria editar o usuario luiz", function (done) {
+    chai
+      .request(app)
+      .put("/user/luiz")
+      .send({ email: "luiz@gmail.com" })
+      .end(function (err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res.body).to.have.property("email").equals("luiz@gmail.com");
+        done();
+      });
+  });
   //...adicionar pelo menos mais 5 usuarios. se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste
 
   it("o usuario naoExiste não existe no sistema", function (done) {
     chai
       .request(app)
       .get("/user/naoExiste")
-      .end(function (_err, res) {
+      .end(function (_, res) {
         expect(res.body.error).to.be.equal("User not found");
         expect(res).to.have.status(404);
         done();
@@ -88,31 +102,29 @@ describe("Testes da aplicaçao", () => {
       });
   });
 
-  it("deveria excluir o usuario raupp", function (done) {
+  it("deveria excluir o usuario luiz", function (done) {
     chai
       .request(app)
-      .delete("/user/raupp")
+      .delete("/user/luiz")
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res).to.have.status(204);
         done();
       });
   });
 
-  it("o usuario raupp não deve existir mais no sistema", function (done) {
+  it("o usuario luiz não deve existir mais no sistema", function (done) {
     chai
       .request(app)
-      .get("/user/raupp")
-      .end(function (err, res) {
-        expect(err).to.be.null;
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+      .get("/user/luiz")
+      .end(function (_, res) {
+        expect(res.body.error).to.be.equal("User not found");
+        expect(res).to.have.status(404);
         done();
       });
   });
 
-  it("deveria ser uma lista com pelomenos 5 usuarios", function (done) {
+  it("deveria ser uma lista com pelo menos 5 usuarios", function (done) {
     chai
       .request(app)
       .get("/users")
