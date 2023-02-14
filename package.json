@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "NODE_ENV=dev tsx watch src/index.ts",
-    "test": "mocha -r ts-node/register test/*.ts",
+    "test": "mocha -r ts-node/register test/index.ts",
     "db-init": "prisma db push"
   },
   "repository": {

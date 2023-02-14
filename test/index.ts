@@ -9,47 +9,25 @@
 //https://developer.mozilla.org/pt-PT/docs/Web/HTTP/Status (http codes)
 
 import app from "../src/index";
+import { userSchema } from "./userSchema";
 
-import assert from "assert";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import chaiJson from "chai-json-schema";
+import { prisma } from "../src/lib/prisma";
 
 chai.use(chaiHttp);
 chai.use(chaiJson);
 
 const expect = chai.expect;
 
-//Define o minimo de campos que o usuário deve ter. Geralmente deve ser colocado em um arquivo separado
-const userSchema = {
-  title: "Schema do Usuario, define como é o usuario, linha 24 do teste",
-  type: "object",
-  required: ["nome", "email", "idade"],
-  properties: {
-    nome: {
-      type: "string",
-    },
-    email: {
-      type: "string",
-    },
-    idade: {
-      type: "number",
-      minimum: 18,
-    },
-  },
-};
-
 //Inicio dos testes
-
-//este teste é simplesmente pra enteder a usar o mocha/chai
-describe("Um simples conjunto de testes", function () {
-  it("deveria retornar -1 quando o valor não esta presente", function () {
-    assert.equal([1, 2, 3].indexOf(4), -1);
-  });
-});
 
 //testes da aplicação
 describe("Testes da aplicaçao", () => {
+  before(async () => {
+    await prisma.user.deleteMany({ where: { nome: "luiz" } });
+  });
   it("o servidor esta online", function (done) {
     chai
       .request(app)
@@ -73,14 +51,15 @@ describe("Testes da aplicaçao", () => {
       });
   });
 
-  it("deveria criar o usuario raupp", function (done) {
+  it("deveria criar o usuario luiz", function (done) {
     chai
       .request(app)
       .post("/user")
-      .send({ nome: "raupp", email: "jose.raupp@devoz.com.br", idade: 35 })
+      .send({ nome: "luiz", email: "luiz@mail.com", idade: 28 })
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(201);
+        expect(res.body).to.be.jsonSchema(userSchema);
         done();
       });
   });
@@ -90,18 +69,17 @@ describe("Testes da aplicaçao", () => {
     chai
       .request(app)
       .get("/user/naoExiste")
-      .end(function (err, res) {
-        expect(err.response.body.error).to.be.equal("User not found"); //possivelmente forma errada de verificar a mensagem de erro
+      .end(function (_err, res) {
+        expect(res.body.error).to.be.equal("User not found");
         expect(res).to.have.status(404);
-        expect(res.body).to.be.jsonSchema(userSchema);
         done();
       });
   });
 
-  it("o usuario raupp existe e é valido", function (done) {
+  it("o usuario luiz existe e é valido", function (done) {
     chai
       .request(app)
-      .get("/user/raupp")
+      .get("/user/luiz")
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
