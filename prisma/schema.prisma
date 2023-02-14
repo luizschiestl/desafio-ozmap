@@ -11,8 +11,9 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(uuid())
-  nome  String
-  email String @unique
-  idade Int
+  id           String  @id @default(uuid())
+  nome         String  @unique
+  email        String  @unique
+  nomeCompleto String?
+  idade        Int
 }
