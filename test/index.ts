@@ -14,7 +14,6 @@ import { userSchema } from "./userSchema";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import chaiJson from "chai-json-schema";
-import { prisma } from "../src/lib/prisma";
 
 chai.use(chaiHttp);
 chai.use(chaiJson);
@@ -25,9 +24,6 @@ const expect = chai.expect;
 
 //testes da aplicação
 describe("Testes da aplicaçao", () => {
-  before(async () => {
-    await prisma.user.deleteMany({ where: { nome: "luiz" } });
-  });
   it("o servidor esta online", function (done) {
     chai
       .request(app)
@@ -84,7 +80,7 @@ describe("Testes da aplicaçao", () => {
       .request(app)
       .get("/user/naoExiste")
       .end(function (_, res) {
-        expect(res.body.error).to.be.equal("User not found");
+        expect(res.body.message).to.be.equal("User not found");
         expect(res).to.have.status(404);
         done();
       });
@@ -118,7 +114,7 @@ describe("Testes da aplicaçao", () => {
       .request(app)
       .get("/user/luiz")
       .end(function (_, res) {
-        expect(res.body.error).to.be.equal("User not found");
+        expect(res.body.message).to.be.equal("User not found");
         expect(res).to.have.status(404);
         done();
       });

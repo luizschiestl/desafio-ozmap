@@ -7,8 +7,6 @@ export const createUser = async (ctx: Context) => {
     ctx.status = 201;
     ctx.body = user;
   } catch (error) {
-    console.error(error);
-    ctx.status = 500;
-    ctx.body = { message: "Erro interno" };
+    ctx.app.emit("error", error, ctx);
   }
 };

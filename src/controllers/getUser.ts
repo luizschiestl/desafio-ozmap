@@ -11,6 +11,6 @@ export const getUser = async (ctx: Context) => {
     ctx.body = user;
   } else {
     ctx.status = 404;
-    ctx.body = { error: "User not found" };
+    ctx.body = { message: "User not found" };
   }
 };
