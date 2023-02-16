@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import { prisma } from "../lib/prisma";
+import { Context } from 'koa';
+import { prisma } from '../lib/prisma';
 
 export const getUser = async (ctx: Context) => {
   const user = await prisma.user.findUnique({
@@ -11,6 +11,6 @@ export const getUser = async (ctx: Context) => {
     ctx.body = user;
   } else {
     ctx.status = 404;
-    ctx.body = { message: "User not found" };
+    ctx.body = { message: 'User not found' };
   }
 };

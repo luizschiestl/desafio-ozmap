@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import { prisma } from "../lib/prisma";
+import { Context } from 'koa';
+import { prisma } from '../lib/prisma';
 
 export const editUser = async (ctx: Context) => {
   try {
@@ -10,6 +10,6 @@ export const editUser = async (ctx: Context) => {
     ctx.status = 200;
     ctx.body = user;
   } catch (error) {
-    ctx.app.emit("error", error, ctx);
+    ctx.app.emit('error', error, ctx);
   }
 };

@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import { prisma } from "../lib/prisma";
+import { Context } from 'koa';
+import { prisma } from '../lib/prisma';
 
 export const getAllUsers = async (ctx: Context) => {
   const { offset, limit, pageable } = ctx.state.paginate;

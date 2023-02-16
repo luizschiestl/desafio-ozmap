@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import { prisma } from "../lib/prisma";
+import { Context } from 'koa';
+import { prisma } from '../lib/prisma';
 
 export const createUser = async (ctx: Context) => {
   try {
@@ -7,6 +7,6 @@ export const createUser = async (ctx: Context) => {
     ctx.status = 201;
     ctx.body = user;
   } catch (error) {
-    ctx.app.emit("error", error, ctx);
+    ctx.app.emit('error', error, ctx);
   }
 };
