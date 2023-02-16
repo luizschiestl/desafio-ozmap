@@ -73,6 +73,30 @@ describe("Testes da aplicaçao", () => {
         done();
       });
   });
+
+  it("deveria tentar criar usuario menor de idade e falhar", function (done) {
+    chai
+      .request(app)
+      .post("/user")
+      .send({ nome: "jorge", email: "jorge@mail.com", idade: 10 })
+      .end(function (_, res) {
+        expect(res).to.have.status(400);
+        expect(res.body.message).to.be.equal("Idade não pode ser menor que 18");
+        done();
+      });
+  });
+
+  it("deveria tentar criar usuario com email inválido e falhar", function (done) {
+    chai
+      .request(app)
+      .post("/user")
+      .send({ nome: "jorge", email: "asdfasdfsdafds", idade: 20 })
+      .end(function (_, res) {
+        expect(res).to.have.status(400);
+        expect(res.body.message).to.be.equal("Email inválido");
+        done();
+      });
+  });
   //...adicionar pelo menos mais 5 usuarios. se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste
 
   it("o usuario naoExiste não existe no sistema", function (done) {
