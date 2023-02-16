@@ -8,17 +8,25 @@
 //https://www.chaijs.com/plugins/chai-json-schema/
 //https://developer.mozilla.org/pt-PT/docs/Web/HTTP/Status (http codes)
 
-import app from "../src/index";
-import { userSchema } from "./userSchema";
-
 import chai from "chai";
 import chaiHttp from "chai-http";
 import chaiJson from "chai-json-schema";
+import { faker } from "@faker-js/faker";
+
+import app from "../src/index";
+import { userSchema } from "./userSchema";
 
 chai.use(chaiHttp);
 chai.use(chaiJson);
 
 const expect = chai.expect;
+
+const randomUsers = Array.from({ length: 5 }).map(() => ({
+  nome: faker.internet.userName(),
+  email: faker.internet.email(),
+  nomeCompleto: faker.name.fullName(),
+  idade: faker.datatype.number({ min: 18, max: 104 }),
+}));
 
 //Inicio dos testes
 
@@ -64,12 +72,12 @@ describe("Testes da aplicaçao", () => {
     chai
       .request(app)
       .put("/user/luiz")
-      .send({ email: "luiz@gmail.com" })
+      .send({ email: "luiz@hotmail.com" })
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
         expect(res.body).to.be.jsonSchema(userSchema);
-        expect(res.body).to.have.property("email").equals("luiz@gmail.com");
+        expect(res.body).to.have.property("email").equals("luiz@hotmail.com");
         done();
       });
   });
@@ -78,7 +86,11 @@ describe("Testes da aplicaçao", () => {
     chai
       .request(app)
       .post("/user")
-      .send({ nome: "jorge", email: "jorge@mail.com", idade: 10 })
+      .send({
+        nome: faker.internet.userName(),
+        email: faker.internet.email(),
+        idade: 10,
+      })
       .end(function (_, res) {
         expect(res).to.have.status(400);
         expect(res.body.message).to.be.equal("Idade não pode ser menor que 18");
@@ -97,7 +109,6 @@ describe("Testes da aplicaçao", () => {
         done();
       });
   });
-  //...adicionar pelo menos mais 5 usuarios. se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste
 
   it("o usuario naoExiste não existe no sistema", function (done) {
     chai
@@ -142,6 +153,20 @@ describe("Testes da aplicaçao", () => {
         expect(res).to.have.status(404);
         done();
       });
+  });
+
+  randomUsers.forEach((user, i) => {
+    it(`deveria criar usuário aleatório ${i + 1}`, function (done) {
+      chai
+        .request(app)
+        .post("/user")
+        .send(user)
+        .end(function (err, res) {
+          expect(err).to.be.null;
+          expect(res.body).to.be.jsonSchema(userSchema);
+          done();
+        });
+    });
   });
 
   it("deveria ser uma lista com pelo menos 5 usuarios", function (done) {
