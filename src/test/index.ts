@@ -13,7 +13,7 @@ import chaiHttp from "chai-http";
 import chaiJson from "chai-json-schema";
 import { faker } from "@faker-js/faker";
 
-import app from "../src/index";
+import app from "../index";
 import { userSchema } from "./userSchema";
 
 chai.use(chaiHttp);
