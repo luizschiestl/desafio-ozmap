@@ -1,0 +1,224 @@
+swagger: '2.0'
+info:
+  title: API de Usuários
+  description: Documentação da API de usuários
+  version: 1.0.0
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+paths:
+  /user:
+    post:
+      summary: Cria usuário
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: dados para criação do usuário
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '400':
+          description: 'Formato da requisição incorreto'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              path:
+                type: array
+                items:
+                  type: string
+              type:
+                type: string
+              context:
+                type: object
+        '404':
+          description: Usuário não encontrado
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                default: 'User not found'
+        '201':
+          description: Informações do usuário criado
+          schema:
+            allOf:
+              - $ref: '#/definitions/User'
+              - type: object
+                properties:
+                  id:
+                    type: string
+  /user/{nome}:
+    get:
+      summary: Retorna o usuário pelo parâmetro {nome}
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          type: string
+          description: nome de usuário
+      produces:
+        - 'application/json'
+      responses:
+        '404':
+          description: Usuário não encontrado
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                default: 'User not found'
+        '200':
+          description: Informações do usuário
+          schema:
+            allOf:
+              - $ref: '#/definitions/User'
+              - type: object
+                properties:
+                  id:
+                    type: string
+    delete:
+      summary: Remove o usuário {nome}
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          type: string
+          description: nome de usuário
+      produces:
+        - 'application/json'
+      responses:
+        '404':
+          description: Usuário não encontrado
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                default: 'User not found'
+        '204':
+          description: Usuário removido com sucesso
+    put:
+      summary: Edita o usuário {nome}
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          type: string
+          description: nome de usuário
+        - name: body
+          in: body
+          required: true
+          description: dados para serem alterados
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '400':
+          description: 'Formato da requisição incorreto'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              path:
+                type: array
+                items:
+                  type: string
+              type:
+                type: string
+              context:
+                type: object
+        '404':
+          description: Usuário não encontrado
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                default: 'User not found'
+        '200':
+          description: Informações do usuário atualizadas
+          schema:
+            allOf:
+              - $ref: '#/definitions/User'
+              - type: object
+                properties:
+                  id:
+                    type: string
+  /users:
+    get:
+      summary: Retorna lista paginada de usuários
+      produces:
+        - application/json
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          type: number
+          description: número de resultados por página
+        - name: page
+          in: query
+          required: false
+          type: number
+          description: página atual
+      responses:
+        '200':
+          description: Resultado da requisição
+          schema:
+            type: object
+            properties:
+              limit:
+                type: number
+              total:
+                type: number
+              offset:
+                type: number
+              currentPage:
+                type: number
+              hasPrev:
+                type: boolean
+              hasNext:
+                type: boolean
+              pageCount:
+                type: number
+              count:
+                type: number
+              rows:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                    - $ref: '#/definitions/User'
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+
+definitions:
+  User:
+    type: object
+    properties:
+      nome:
+        type: string
+        description: nome de usuário
+      email:
+        type: string
+        description: email do usuário
+      nomeCompleto:
+        type: string
+        description: nome completo do usuário
+      idade:
+        type: number
+        description: idade do usuário
+        minimum: 18
