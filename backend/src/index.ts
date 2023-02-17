@@ -2,6 +2,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import Koa, { Context } from 'koa';
 import koaBody from 'koa-body';
 import { koaSwagger } from 'koa2-swagger-ui';
+import cors from '@koa/cors';
 
 import { router } from './routes';
 
@@ -16,13 +17,14 @@ const koa = new Koa();
 const spec = yamljs.load(__dirname + '/doc/swagger.yml');
 
 koa
+  .use(cors())
   .use(
     koaSwagger({
       swaggerOptions: { spec },
       routePrefix: '/swagger',
     })
   )
-  .use(pagination({ defaultLimit: 5 }))
+  .use(pagination({ defaultLimit: 10 }))
   .use(koaBody())
   .use(router.routes())
   .use(router.allowedMethods())
