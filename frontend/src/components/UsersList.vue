@@ -31,15 +31,14 @@
                   </th>
                   <th
                     scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Idade
                   </th>
                   <th
                     scope="col"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                  </th>
+                  ></th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
@@ -63,25 +62,30 @@
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">
+                    <div class="text-sm text-center text-gray-900">
                       {{ user.idade }}
                     </div>
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                    @click="() => openDialog(user)"
                   >
-                    <button
-                      class="text-indigo-600 hover:text-indigo-900"
-                    >
+                    <button class="text-indigo-600 hover:text-indigo-900">
                       Editar
                     </button>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <div class="w-full flex justify-end items-center p-2">
+            <div class="w-full flex justify-end items-center p-2 gap-2">
               <button
-                class="rounded-lg bg-slate-300 text-base font-bold uppercase p-3"
+                class="disabled:bg-blue-200 disabled:select-none bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                @click="openDialog"
+              >
+                Criar
+              </button>
+              <button
+                class="disabled:bg-blue-200 disabled:select-none bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 :disabled="!response.hasPrev"
                 @click="
                   () => loadUsers({ page: response.currentPage + 1 })
@@ -90,7 +94,7 @@
                 Anterior
               </button>
               <button
-                class="rounded-lg bg-slate-300 text-base font-bold uppercase p-3"
+                class="disabled:bg-blue-200 disabled:select-none bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 :disabled="!response.hasNext"
                 @click="
                   () => loadUsers({ page: response.currentPage + 1 })
@@ -104,17 +108,25 @@
       </div>
     </div>
   </div>
+  <UserDetail
+    v-model:show="dialogOpen"
+    v-bind:user="currentUser"
+    :close="closeDialog"
+  />
 </template>
 
 <script lang="ts">
 import { getAllUsers } from '@/services/userService';
-import { UsersResultType } from '@/types/UserType';
+import { UsersResultType, UserType } from '@/types/UserType';
 import { defineComponent } from 'vue';
+import UserDetail from './UserDetail.vue';
 
 export default defineComponent({
   data() {
     return {
       response: {} as UsersResultType,
+      dialogOpen: false,
+      currentUser: {} as UserType | undefined,
     };
   },
   computed: {},
@@ -130,6 +142,16 @@ export default defineComponent({
         console.log(error);
       }
     },
+    openDialog(user?: UserType) {
+      this.dialogOpen = true;
+      this.currentUser = user;
+    },
+    closeDialog() {
+      this.dialogOpen = false;
+      this.currentUser = undefined;
+      this.loadUsers({ page: this.response.currentPage });
+    },
   },
+  components: { UserDetail },
 });
 </script>
